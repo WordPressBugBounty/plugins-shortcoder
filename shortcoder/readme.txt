@@ -7,8 +7,8 @@ Donate link: https://www.paypal.me/vaakash/
 License: GPLv2 or later
 Requires PHP: 5.3
 Requires at least: 4.9.0
-Tested up to: 6.6.1
-Stable tag: 6.4
+Tested up to: 6.8
+Stable tag: 6.5
 
 Create custom "Shortcodes" easily for HTML, JavaScript, CSS code snippets and use the shortcodes within posts, pages & widgets
 
@@ -62,6 +62,7 @@ Though shortcodes can be used in **any** place manually, Shortcoder provides bel
 Shortcoder also provides a [PRO version](https://www.aakashweb.com/wordpress-plugins/shortcoder/) which has additional features to further enhance the experience. Below features are offered in the PRO version.
 
 * **Custom editor** - Edit Shortcode content using block editor or page builder plugins like Elementor and WPBakery.
+* **(New) Translation with WPML** - Translate Shortcode content with WPML.
 * **Revisions** - Revisions support for Shortcode content.
 * **Locate shortcode** - Search posts and pages where a shortcode is used.
 * **Extra code** - Include extra code to the footer when a shortcode is used in a page.
@@ -130,6 +131,9 @@ Yes, this feature is available in the PRO version. You can upgrade to the [PRO v
 
 
 ## Changelog
+
+### 6.5
+* Fix: Support for WordPress 6.8.
 
 ### 6.4
 * New: Option to set shortcode display name next to shortcode name.

@@ -291,7 +291,7 @@ $(document).ready(function(){
         e.preventDefault();
 
         var form = $('<form>', {
-            action: 'https://news.aakashweb.com/subscription/form',
+            action: 'https://www.aakashweb.com/apps/subscription/',
             method: 'POST',
             target: '_blank'
         }).append($('<input>', {
