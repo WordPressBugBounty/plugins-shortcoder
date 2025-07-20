@@ -112,7 +112,7 @@ class SC_Admin_Tools{
         require_once( ABSPATH . 'wp-admin/includes/screen.php' );
 
         $screen = get_current_screen();
-        return ( $screen->post_type == SC_POST_TYPE && $screen->base == 'post' );
+        return ( $screen && $screen->post_type == SC_POST_TYPE && $screen->base == 'post' );
 
     }
 

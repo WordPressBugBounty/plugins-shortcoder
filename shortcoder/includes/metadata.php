@@ -98,7 +98,7 @@ class Shortcoder_Metadata{
                 $d = array(
                     'title' => wp_title( '', false ),
                     'url' => get_post_type_archive_link( $post_type ),
-                    'post_excerpt' => $post_type_obj->description
+                    'post_excerpt' => $post_type_obj ? $post_type_obj->description : ''
                 );
                 
             }elseif( is_date() ){
