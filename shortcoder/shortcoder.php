@@ -4,13 +4,13 @@ Plugin Name: Shortcoder
 Plugin URI: https://www.aakashweb.com/wordpress-plugins/shortcoder/
 Description: Shortcoder plugin allows to create a custom shortcodes for HTML, JavaScript and other snippets. Now the shortcodes can be used in posts/pages and the snippet will be replaced in place.
 Author: Aakash Chakravarthy
-Version: 6.5.2
+Version: 6.5.3
 Author URI: https://www.aakashweb.com/
 Text Domain: shortcoder
 Domain Path: /languages
 */
 
-define( 'SC_VERSION', '6.5.2' );
+define( 'SC_VERSION', '6.5.3' );
 define( 'SC_PATH', plugin_dir_path( __FILE__ ) ); // All have trailing slash
 define( 'SC_URL', plugin_dir_url( __FILE__ ) );
 define( 'SC_ADMIN_URL', trailingslashit( plugin_dir_url( __FILE__ ) . 'admin' ) );
@@ -138,7 +138,8 @@ final class Shortcoder{
         return apply_filters( 'sc_mod_settings', array(
             'default_editor' => 'code',
             'default_content' => '',
-            'list_content' => 'no'
+            'list_content' => 'no',
+            'sanitize_custom_fields' => 'yes'
         ));
 
     }
@@ -317,6 +318,7 @@ final class Shortcoder{
             return $content;
         }
 
+        $general_settings = self::get_settings();
         $cf_tags = $matches[1];
 
         foreach( $cf_tags as $cf_tag ){
@@ -336,7 +338,9 @@ final class Shortcoder{
                 $value = $cf_default_val;
             }
 
-            $value = wp_kses_post( $value );
+            if ( isset( $general_settings['sanitize_custom_fields'] ) && $general_settings['sanitize_custom_fields'] === 'yes' ) {
+                $value = wp_kses_post( $value );
+            }
 
             $full_tag = '$$custom_field:' . $cf_tag . '$$';
             $content = str_replace( $full_tag, $value, $content );

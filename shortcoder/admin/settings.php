@@ -76,6 +76,16 @@ class SC_Admin_Settings{
                 'helper' => __( 'List the shortcode content in "All shortcodes" page.', 'shortcoder' )
             ))),
 
+            array( __( 'Sanitize custom field value', 'shortcoder' ), SC_Admin_Form::field( 'select', array(
+                'value' => $settings[ 'sanitize_custom_fields' ],
+                'name' => 'sc_sanitize_custom_fields',
+                'list' => array(
+                    'no' => __( 'No', 'shortcoder' ),
+                    'yes' => __( 'Yes', 'shortcoder' )
+                ),
+                'helper' => __( 'Sanitize custom field values before replacing them in shortcode content.', 'shortcoder' )
+            ))),
+
         );
 
         echo '<form method="post">';
