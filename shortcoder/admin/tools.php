@@ -21,6 +21,11 @@ class SC_Admin_Tools{
 
     public static function register_mce(){
 
+        // Show shortcoder button only for administrators
+        if( !current_user_can( 'manage_options' ) ){
+            return;
+        }
+
         add_filter( 'mce_buttons', array( __CLASS__, 'register_mce_button' ) );
 
         add_filter( 'mce_external_plugins', array( __CLASS__, 'register_mce_js' ) );
@@ -42,7 +47,7 @@ class SC_Admin_Tools{
         if( self::is_sc_edit_page() )
             return $plugins;
 
-        $plugins[ 'shortcoder' ] = SC_ADMIN_URL . '/js/tinymce/editor_plugin.js';
+        $plugins[ 'shortcoder' ] = SC_ADMIN_URL . 'js/tinymce/editor_plugin.js';
         return $plugins;
 
     }
@@ -94,7 +99,8 @@ class SC_Admin_Tools{
 
     public static function insert_window(){
 
-        if( !current_user_can( 'edit_posts' ) ){
+        // Browse and insert popup should be available only for administrators
+        if( !current_user_can( 'manage_options' ) ){
             wp_die( __( 'Not enough permissions to browse and insert shortcodes', 'shortcoder' ) );
         }
 
