@@ -96,6 +96,16 @@ class SC_Admin_Settings{
                 'helper' => __( 'Sanitize custom field values before replacing them in shortcode content.', 'shortcoder' )
             ))),
 
+            array( __( 'Allow editors to insert shortcodes', 'shortcoder' ), SC_Admin_Form::field( 'select', array(
+                'value' => $settings[ 'allow_editor_insert' ],
+                'name' => 'sc_allow_editor_insert',
+                'list' => array(
+                    'no' => __( 'No', 'shortcoder' ),
+                    'yes' => __( 'Yes', 'shortcoder' )
+                ),
+                'helper' => __( 'Allow users with the Editor role to browse and insert existing shortcodes in the post editor.', 'shortcoder' )
+            ))),
+
         );
 
         echo '<form method="post">';

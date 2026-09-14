@@ -21,8 +21,7 @@ class SC_Admin_Tools{
 
     public static function register_mce(){
 
-        // Show shortcoder button only for administrators
-        if( !current_user_can( 'manage_options' ) ){
+        if( !self::can_insert_shortcodes() ){
             return;
         }
 
@@ -58,18 +57,8 @@ class SC_Admin_Tools{
             return false;
         }
 
-        $asset_file = include( SC_PATH . 'admin/js/blocks/index.asset.php');
-
-        wp_register_script(
-            'shortcoder',
-            SC_ADMIN_URL . '/js/blocks/index.js',
-            $asset_file[ 'dependencies' ],
-            $asset_file[ 'version' ]
-        );
-
-        register_block_type( 'shortcoder/shortcoder', array(
-            'render_callback' => array( __CLASS__, 'render_block' ),
-            'editor_script' => 'shortcoder'
+        register_block_type( SC_PATH . 'admin/js/blocks', array(
+            'render_callback' => array( __CLASS__, 'render_block' )
         ));
      
     }
@@ -86,9 +75,7 @@ class SC_Admin_Tools{
         wp_localize_script( 'sc-tools-js', 'SC_INSERT_VARS', array(
             'insert_page' => admin_url( 'admin-ajax.php?action=sc_insert_window' ),
             'popup_title' => __( 'Insert shortcode to editor', 'shortcoder' ),
-            'popup_opened' => false,
-            'block_editor' => false,
-            'block_inline_insert' => false
+            'popup_opened' => false
         ));
 
     }
@@ -99,13 +86,23 @@ class SC_Admin_Tools{
 
     public static function insert_window(){
 
-        // Browse and insert popup should be available only for administrators
-        if( !current_user_can( 'manage_options' ) ){
+        if( !self::can_insert_shortcodes() ){
             wp_die( __( 'Not enough permissions to browse and insert shortcodes', 'shortcoder' ) );
         }
 
         include_once( 'insert.php' );
         wp_die();
+
+    }
+
+    public static function can_insert_shortcodes(){
+
+        if( current_user_can( 'manage_options' ) ){
+            return true;
+        }
+
+        $settings = Shortcoder::get_settings();
+        return $settings[ 'allow_editor_insert' ] == 'yes' && current_user_can( 'edit_others_posts' );
 
     }
 

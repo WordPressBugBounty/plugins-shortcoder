@@ -1,42 +1,39 @@
-function sc_show_insert(shortcode=false, block_editor_id=false, block_inline_insert=false){
+function sc_show_insert(shortcode = '', on_insert = null){
     var $ = jQuery;
-    var popup = '<div id="sci_wrap"><div id="sci_bg"></div><div id="sci_popup"><header><span id="sci_title"></span><span id="sci_close" title="Close"><span class="dashicons dashicons-no"></span></span></header><iframe></iframe></div></div>';
+    var insert_vars = window.SC_INSERT_VARS;
+    var $popup = $('#sci_wrap');
 
-    if(typeof window.SC_INSERT_VARS === 'undefined'){
+    if(typeof insert_vars === 'undefined'){
         console.log('Cannot load shortcode insert window as the script is not loaded properly');
+        return;
     }
 
-    window.SC_INSERT_VARS.block_editor = block_editor_id;
-    window.SC_INSERT_VARS.block_inline_insert = block_inline_insert;
+    insert_vars.on_insert = on_insert;
 
-    if($('#sci_wrap').length != 0 && !window.SC_INSERT_VARS.popup_opened){
-        $('#sci_wrap').show();
+    if($popup.length){
+        $popup.show();
         sc_notify_insert(shortcode);
         return;
     }
 
-    $('body').append(popup);
+    $('body').append('<div id="sci_wrap"><div id="sci_bg"></div><div id="sci_popup"><header><span id="sci_title"></span><span id="sci_close" title="Close"><span class="dashicons dashicons-no"></span></span></header><iframe></iframe></div></div>');
 
-    $('#sci_title').text(window.SC_INSERT_VARS.popup_title);
-    $('#sci_popup > iframe').attr('src', window.SC_INSERT_VARS.insert_page);
+    $popup = $('#sci_wrap');
+    $('#sci_title').text(insert_vars.popup_title);
+    $('#sci_popup > iframe').attr('src', insert_vars.insert_page);
+    $('#sci_close').on('click', sc_close_insert);
 
-    $('#sci_close').on('click', function(){
-        sc_close_insert();
-    });
-
-    window.SC_INSERT_VARS.popup_opened = true;
-    window.SC_INSERT_VARS.iframe = $('#sci_popup > iframe');
-
-    window.SC_INSERT_VARS.iframe.load(function(){
+    insert_vars.popup_opened = true;
+    insert_vars.iframe = $('#sci_popup > iframe');
+    insert_vars.iframe.on('load', function(){
         sc_notify_insert(shortcode);
     });
-
 }
 
 function sc_close_insert(){
     jQuery('#sci_wrap').hide();
     window.SC_INSERT_VARS.popup_opened = false;
-    window.SC_INSERT_VARS.block_editor = false;
+    window.SC_INSERT_VARS.on_insert = null;
 }
 
 function sc_notify_insert(shortcode){
@@ -52,51 +49,40 @@ function sc_notify_insert(shortcode){
 
 }
 
-function sc_block_editor_content(content){
-    var block_id = window.SC_INSERT_VARS.block_editor;
-
-    if(block_id !== false){
-        var sc_box = document.getElementById('shortcoder-input-' + block_id);
-
-        sc_set_native_value(sc_box, content);
-        sc_box.dispatchEvent(new Event('input', { bubbles: true }));
-
-        return true;
-    }
-
-    return false;
-}
-
-function sc_block_inline_insert(content){
-
-    if(window.SC_INSERT_VARS.block_inline_insert && window.sc_inline_insert_props){
-        var props = window.sc_inline_insert_props.props;
-        var insert = window.sc_inline_insert_props.insert;
-        props.onChange(
-            insert(props.value, content)
-        );
-        window.sc_inline_insert_props = false;
-        return true;
-    }
-
-    return false;
-
-}
-
 function sc_qt_show_insert(){
     sc_show_insert();
 }
 
-function sc_set_native_value(element, value) {
-    var valueSetter = Object.getOwnPropertyDescriptor(element, 'value').set;
-    var prototype = Object.getPrototypeOf(element);
-    var prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
-  
-    if (valueSetter && valueSetter !== prototypeValueSetter) {
-      prototypeValueSetter.call(element, value);
-    } else {
-      valueSetter.call(element, value);
-    }
+if(window.addEventListener){
+    window.addEventListener('message', function(event){
+        var data = event.data;
+        var iframe = window.SC_INSERT_VARS && window.SC_INSERT_VARS.iframe;
+
+        if(!data || !iframe || event.source !== iframe[0].contentWindow){
+            return;
+        }
+
+        if(data.type === 'shortcoder_close'){
+            sc_close_insert();
+            return;
+        }
+
+        if(data.type !== 'shortcoder_insert'){
+            return;
+        }
+
+        if(typeof window.SC_INSERT_VARS.on_insert === 'function' && window.SC_INSERT_VARS.on_insert(data.content) !== false){
+            sc_close_insert();
+            return;
+        }
+
+        if(typeof window.send_to_editor === 'function'){
+            window.send_to_editor(data.content);
+            sc_close_insert();
+        }else{
+            alert('Editor does not exist. Cannot insert shortcode !');
+        }
+    }, false);
 }
 
 if(window.addEventListener){

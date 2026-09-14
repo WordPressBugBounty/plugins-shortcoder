@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "shortcoder/shortcoder",
+    "title": "Shortcoder",
+    "category": "widgets",
+    "attributes": {
+        "text": {
+            "type": "string",
+            "source": "html"
+        }
+    },
+    "supports": {
+        "html": false,
+        "customClassName": false,
+        "className": false
+    },
+    "textdomain": "shortcoder",
+    "editorScript": "file:./index.js"
+}

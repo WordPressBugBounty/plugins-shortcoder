@@ -7,8 +7,8 @@ Donate link: https://www.paypal.me/vaakash/
 License: GPLv2 or later
 Requires PHP: 5.3
 Requires at least: 4.9.0
-Tested up to: 7.0.2
-Stable tag: 6.5.4
+Tested up to: 7.1
+Stable tag: 6.6
 
 Create custom "Shortcodes" easily for HTML, JavaScript, CSS code snippets and use the shortcodes within posts, pages & widgets
 
@@ -131,6 +131,11 @@ Yes, this feature is available in the PRO version. You can upgrade to the [PRO v
 
 
 ## Changelog
+
+### 6.6
+* New: Setting to allow Editors to browse and insert existing shortcodes from the post editor.
+* Fix: Updated Shortcoder block editor as per the latest API.
+* Fix: Support for WordPress 7.1
 
 ### 6.5.4
 * Fix: Select and insert shortcode popup is available only for administrators.

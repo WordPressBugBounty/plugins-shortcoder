@@ -2,31 +2,17 @@
 $(document).ready(function(){
 
     var send_editor = function(content){
-
-        if(typeof parent.sc_block_editor_content === 'function'){
-            if(parent.sc_block_editor_content(content)){
-                return true;
-            }
-        }
-
-        if(typeof parent.sc_block_inline_insert === 'function'){
-            if(parent.sc_block_inline_insert(content)){
-                return true;
-            }
-        }
-
-        if(typeof parent.send_to_editor === 'function'){
-            parent.send_to_editor(content);
-        }else{
-            alert('Editor does not exist. Cannot insert shortcode !');
-        }
+        window.parent.postMessage({
+            type: 'shortcoder_insert',
+            content: content
+        }, '*');
 
     }
 
     var close_window = function(){
-        if( typeof parent.sc_close_insert === 'function' ){
-            parent.sc_close_insert();
-        }
+        window.parent.postMessage({
+            type: 'shortcoder_close'
+        }, '*');
     }
 
     var copy_to_clipboard = function(str){
@@ -44,18 +30,17 @@ $(document).ready(function(){
     var generate_sc = function(id){
         var $wrap = $('.sc_wrap[data-id="' + id + '"]');
         var name = $wrap.attr('data-name');
-        var enclosed = $wrap.attr('data-enclosed');
         var params = '';
 
         $wrap.find('.sc_param').each(function(){
             if($(this).val() != ''){
-                attr = $(this).attr('data-param');
-                val = $(this).val().replace( /\"/g, '' );
+                var attr = $(this).attr('data-param');
+                var val = $(this).val().replace( /\"/g, '' );
                 params += attr + '="' + val + '" ';
             }
         });
 
-        sc = '[sc name="' + name + '" ' + params + ']';
+        var sc = '[sc name=\"' + name + '\" ' + params + ']';
         sc += '[/sc]';
 
         return sc;
@@ -69,7 +54,7 @@ $(document).ready(function(){
 
         var attributes_text_matches = re_attrs_text.exec(shortcode);
 
-        if(attributes_text_matches.length < 1){
+        if(!attributes_text_matches){
             return false;
         }
 
